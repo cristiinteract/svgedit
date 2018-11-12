@@ -29449,22 +29449,20 @@
       //   }
       // }
 
-      $$b.post({
-        // method: 'POST',
+      $$b.ajax({
+        method: "POST",
         url: 'http://www.devprev.com/simco-vehimp/manage/labels',
         contentType: 'image/svg+xml',
         xhrFields: {
           withCredentials: false
         },
-        data: {
-          svg_data: escape(svg)
-        },
+        data: escape(svg),
         processData: false,
-        success: function success() {
-          console.log("save success");
+        success: function success(res) {
+          console.log("save success", res);
         },
-        error: function error() {
-          console.log("save error");
+        error: function error(err) {
+          console.log("save error", err);
         }
       }); // console.log(svg)
       // $.post(url, { svg_data: escape(svg) } );

@@ -1731,20 +1731,20 @@ editor.init = function () {
     //   }
     // }
 
-    $.post({
-      // method: 'POST',
+    $.ajax({
+      method: "POST",
       url: 'http://www.devprev.com/simco-vehimp/manage/labels',
       contentType: 'image/svg+xml',
       xhrFields: {
         withCredentials: false
       },
-      data: { svg_data: escape(svg) },
+      data: escape(svg),
       processData: false,
-      success: function() {
-        console.log("save success");
+      success: function(res) {
+        console.log("save success", res);
       },
-      error: function() {
-        console.log("save error");
+      error: function(err) {
+        console.log("save error", err);
       }
     });
 
