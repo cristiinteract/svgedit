@@ -1690,46 +1690,66 @@ editor.init = function () {
     // can just provide their own custom save handler and might not want the XML prolog
     svg = '<?xml version="1.0"?>\n' + svg;
 
-    // IE9 doesn't allow standalone Data URLs
-    // https://connect.microsoft.com/IE/feedback/details/542600/data-uri-images-fail-when-loaded-by-themselves
-    if (isIE()) {
-      showSourceEditor(0, true);
-      return;
-    }
+    // // IE9 doesn't allow standalone Data URLs
+    // // https://connect.microsoft.com/IE/feedback/details/542600/data-uri-images-fail-when-loaded-by-themselves
+    // if (isIE()) {
+    //   showSourceEditor(0, true);
+    //   return;
+    // }
 
-    // Since saving SVGs by opening a new window was removed in Chrome use artificial link-click
-    // https://stackoverflow.com/questions/45603201/window-is-not-allowed-to-navigate-top-frame-navigations-to-data-urls
-    const a = document.createElement('a');
-    a.href = 'data:image/svg+xml;base64,' + Utils.encode64(svg);
-    a.download = 'icon.svg';
-    a.style = 'display: none;';
-    document.body.append(a); // Need to append for Firefox
+    // // Since saving SVGs by opening a new window was removed in Chrome use artificial link-click
+    // // https://stackoverflow.com/questions/45603201/window-is-not-allowed-to-navigate-top-frame-navigations-to-data-urls
+    // const a = document.createElement('a');
+    // a.href = 'data:image/svg+xml;base64,' + Utils.encode64(svg);
+    // a.download = 'icon.svg';
+    // a.style = 'display: none;';
+    // document.body.append(a); // Need to append for Firefox
 
-    a.click();
+    // a.click();
 
-    // Alert will only appear the first time saved OR the
-    //   first time the bug is encountered
-    let done = $.pref('save_notice_done');
+    // // Alert will only appear the first time saved OR the
+    // //   first time the bug is encountered
+    // let done = $.pref('save_notice_done');
 
-    if (done !== 'all') {
-      let note = uiStrings.notification.saveFromBrowser.replace('%s', 'SVG');
-      // Check if FF and has <defs/>
-      if (isGecko()) {
-        if (svg.includes('<defs')) {
-          // warning about Mozilla bug #308590 when applicable (seems to be fixed now in Feb 2013)
-          note += '\n\n' + uiStrings.notification.defsFailOnSave;
-          $.pref('save_notice_done', 'all');
-          done = 'all';
-        } else {
-          $.pref('save_notice_done', 'part');
-        }
-      } else {
-        $.pref('save_notice_done', 'all');
+    // if (done !== 'all') {
+    //   let note = uiStrings.notification.saveFromBrowser.replace('%s', 'SVG');
+    //   // Check if FF and has <defs/>
+    //   if (isGecko()) {
+    //     if (svg.includes('<defs')) {
+    //       // warning about Mozilla bug #308590 when applicable (seems to be fixed now in Feb 2013)
+    //       note += '\n\n' + uiStrings.notification.defsFailOnSave;
+    //       $.pref('save_notice_done', 'all');
+    //       done = 'all';
+    //     } else {
+    //       $.pref('save_notice_done', 'part');
+    //     }
+    //   } else {
+    //     $.pref('save_notice_done', 'all');
+    //   }
+    //   if (done !== 'part') {
+    //     alert(note);
+    //   }
+    // }
+
+    $.post({
+      // method: 'POST',
+      url: 'http://www.devprev.com/simco-vehimp/manage/labels',
+      contentType: 'image/svg+xml',
+      xhrFields: {
+        withCredentials: false
+      },
+      data: { svg_data: escape(svg) },
+      processData: false,
+      success: function() {
+        console.log("save success");
+      },
+      error: function() {
+        console.log("save error");
       }
-      if (done !== 'part') {
-        alert(note);
-      }
-    }
+    });
+
+    // console.log(svg)
+    // $.post(url, { svg_data: escape(svg) } );
   };
 
   /**
